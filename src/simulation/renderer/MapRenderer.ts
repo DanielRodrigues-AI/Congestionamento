@@ -6,11 +6,12 @@ export class MapRenderer {
         private map: GridMap
     ) {}
 
-    render(): void {
-        this.clear();
-        this.drawRoads();
-        this.drawIntersections();
-    }
+render(): void {
+    this.clear();
+    this.drawRoads();
+    this.drawIntersections();
+    this.drawTrafficLights();
+}
 
     private clear(): void {
         this.ctx.clearRect(0, 0, 800, 600);
@@ -40,4 +41,18 @@ export class MapRenderer {
             );
         });
     }
+    private drawTrafficLights(): void {
+    this.map.intersections.forEach(intersection => {
+        const { x, y } = intersection.position;
+        this.drawLight(x, y - 22, intersection.verticalLight.state);
+        this.drawLight(x - 22, y, intersection.horizontalLight.state);
+    });
+}
+
+private drawLight(x: number, y: number, state: "green" | "yellow" | "red"): void {
+    this.ctx.fillStyle = state;
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, 6, 0, Math.PI * 2);
+    this.ctx.fill();
+}
 }
